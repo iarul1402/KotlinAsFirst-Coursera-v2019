@@ -81,7 +81,11 @@ fun timeForHalfWay(
     t1: Double, v1: Double,
     t2: Double, v2: Double,
     t3: Double, v3: Double
-): Double = TODO()
+): Double = when {
+    (t1 * v1 + t2 * v2 + t3 * v3) / 2 <= t1 * v1 -> (t1 * v1 + t2 * v2 + t3 * v3) / 2 / v1
+    (t1 * v1 + t2 * v2 + t3 * v3) / 2 <= t1 * v1 + t2 * v2 -> t1 + ((t1 * v1 + t2 * v2 + t3 * v3) / 2 - t1 * v1) / v2
+    else -> t1 + t2 + ((t1 * v1 + t2 * v2 + t3 * v3) / 2 - t1 * v1 - t2 * v2) / v3
+}
 
 /**
  * Простая
@@ -96,7 +100,12 @@ fun whichRookThreatens(
     kingX: Int, kingY: Int,
     rookX1: Int, rookY1: Int,
     rookX2: Int, rookY2: Int
-): Int = TODO()
+): Int = when {
+    (rookX1 != kingX && rookY1 != kingY) && (rookX2 != kingX && rookY2 != kingY) -> 0
+    (rookX1 == kingX || rookY1 == kingY) && (rookX2 != kingX && rookY2 != kingY) -> 1
+    (rookX1 != kingX && rookY1 != kingY) && (rookX2 == kingX || rookY2 == kingY) -> 2
+    else -> 3
+}
 
 /**
  * Простая
@@ -112,8 +121,12 @@ fun rookOrBishopThreatens(
     kingX: Int, kingY: Int,
     rookX: Int, rookY: Int,
     bishopX: Int, bishopY: Int
-): Int = TODO()
-
+): Int = when {
+    rookX != kingX && rookY != kingY && bishopX - bishopY != kingX - kingY && bishopX + bishopY != kingX + kingY -> 0
+    (rookX == kingX || rookY == kingY) && bishopX - bishopY != kingX - kingY && bishopX + bishopY != kingX + kingY -> 1
+    rookX != kingX && rookY != kingY && (bishopX - bishopY == kingX - kingY || bishopX + bishopY == kingX + kingY) -> 2
+    else -> 3
+}
 /**
  * Простая
  *
@@ -122,7 +135,14 @@ fun rookOrBishopThreatens(
  * прямоугольным (вернуть 1) или тупоугольным (вернуть 2).
  * Если такой треугольник не существует, вернуть -1.
  */
-fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
+fun triangleKind(a: Double, b: Double, c: Double): Int = when {
+    a + b <= c || a + c <= b || b + c <= a -> -1
+    else -> when {
+        a * a < b * b + c * c && b * b < a * a + c * c && c * c < a * a + b * b -> 0
+        a * a == b * b + c * c || b * b == a * a + c * c || c * c == a * a + b * b -> 1
+        else -> 2
+    }
+}
 
 /**
  * Средняя
@@ -132,4 +152,16 @@ fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
  * Найти длину пересечения отрезков AB и CD.
  * Если пересечения нет, вернуть -1.
  */
-fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int = TODO()
+fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int = when {
+    d < a || c > b -> -1
+    else -> when {
+        d < b -> when {
+            a < c -> d - c
+            else -> d - a
+        }
+        else -> when {
+            a < c -> b - c
+            else -> b - a
+        }
+    }
+}
