@@ -217,16 +217,18 @@ fun sin(x: Double, eps: Double): Double {
     while (x0 > 2 * kotlin.math.PI - eps) {
         x0 -= 2 * kotlin.math.PI
     }
+    while (x0 < -2 * kotlin.math.PI + eps) {
+        x0 += 2 * kotlin.math.PI
+    }
     var xi = x0
     var sum = xi
     var i = 0
-    while (kotlin.math.abs(xi) >= eps) {
+    while (kotlin.math.abs(xi) > eps) {
         i++
+        xi = x0.pow(1 + 2 * i) / factorial(1 + 2 * i)
         if (i % 2 == 1){
-            xi = x0.pow(1 + 2 * i) / factorial(1 + 2 * i)
             sum -= xi
         } else {
-            xi = x0.pow(1 + 2 * i) / factorial(1 + 2 * i)
             sum += xi
         }
     }
@@ -246,6 +248,9 @@ fun cos(x: Double, eps: Double): Double {
     var x0 = x
     while (x0 > 2 * kotlin.math.PI - eps) {
         x0 -= 2 * kotlin.math.PI
+    }
+    while (x0 < -2 * kotlin.math.PI + eps) {
+        x0 += 2 * kotlin.math.PI
     }
     var xi = 1.0
     var sum = xi
@@ -327,7 +332,6 @@ fun squareSequenceDigit(n: Int): Int {
     var i = 1
     var sqrSeq = 1
     while (count < n) {
-        sqrSeq = 1 // всю последовательность хранить так себе идея
         i++
         var square = i * i
         var m = 1
@@ -337,8 +341,8 @@ fun squareSequenceDigit(n: Int): Int {
             m *= 10
             zerosInM++
         }
-        sqrSeq = sqrSeq * m + i * i
-        count = count + zerosInM
+        sqrSeq = i * i
+        count += zerosInM
     }
     return sqrSeq / (10.toDouble().pow(count - n)).toInt() % 10
 }
@@ -368,7 +372,7 @@ fun fibSequenceDigit(n: Int): Int {
             m *= 10
             zerosInM++
         }
-        sqrSeq = sqrSeq * m + fib(i) + fib(i - 1)
+        sqrSeq = fib(i) + fib(i - 1)
         count = count + zerosInM
     }
     return sqrSeq / (10.toDouble().pow(count - n)).toInt() % 10
